@@ -73,6 +73,7 @@
         }
         height -= this.calcFrameHeight(widgetDiv);
         width -= this.calcFrameWidth(widgetDiv);
+        console.log(width, height);
         return { width: width, height: height };
     };
 

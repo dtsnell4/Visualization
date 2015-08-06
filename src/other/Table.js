@@ -80,6 +80,7 @@
         this._parentElement
             .style("overflow", "hidden")
             .style("position", "relative")
+            .attr("class", "test")
         ;
         this.table = element.append("table").attr("id", "table" + this._id);
         this.thead = this.table.append("thead").append("tr");
@@ -140,6 +141,8 @@
             .style("height", this.target().style.height)
             .style("overflow", "auto")
         ;
+        ///////////////////////////////////////////////////////
+        console.log(element);
         this._parentElement.style("height", this.target().style.height);
         
         var th = this.thead.selectAll("th").data(this._columns, function (d) { return d;});
@@ -219,23 +222,27 @@
         rows
             .enter()
             .append("tr")
-            .on("click.selectionBag", function (d) {
-                context.selectionBagClick(d);
+            .on("click.selectionBag", function (d, i) {
+                var selected = context.selectionBagClick(d) || [i];
                 context.render();
+                var idx = selected[0];
+                while (idx <= selected[selected.length - 1]) {
+                    var xx = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][idx];
+                    if (xx !== undefined) {
+                        xx.classList.add("selected");
+                    }   
+                    idx++;
+                }
+               
             })
-            .on("click", function (d, i) {
+            .on("click", function (d) {
                 context.click(context.rowToObj(d));
             })
         ;
 
         rows
-            .attr("class", function (d, i, j) {
-                if (context._selectionBag.isSelected(context._createSelectionObject(d, i))) {
-                    var xx = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][i];
-                    if (xx !== undefined) {
-                        xx.classList.add("class", "selected");
-                        console.log((xx));
-                    }
+            .attr("class", function (d) {
+                if (context._selectionBag.isSelected(context._createSelectionObject(d))) {
                     return "selected";
                 }
             })
@@ -276,6 +283,11 @@
             divrow.enter().append("div").attr("class","rows-wrapper");
             divrow.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
             divrow.exit().remove();
+var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
+            divcol.enter().append("div").attr("class","cols-wrapper");
+            divcol.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
+            divcol.exit().remove();
+
 
             var outerTableWrapper = context._parentElement[0][0];
             var rowsWrapper = context._parentElement.select(".rows-wrapper");
@@ -348,22 +360,31 @@
                 colsWrapper
                     .style("position", "absolute")
                 ;
-
                 rowsWrapper
                     .style("width", rowWrapperWidth)
                     .style("height", newTableHeight + "px")
                     .style("position", "absolute")
                 ;
             }
+            rowLabelsWrapper.style("margin-top", -domNode.scrollTop + parseInt(colWrapperHeight) + "px");
+            rowLabelsWrapper.select("thead")
+                .style("margin-top", domNode.scrollTop - parseInt(colWrapperHeight) + "px")
+                .on("click", function(d, idx){
+                    context.headerClick(d, idx);
+                })
+            ;
+
         }
+        
         if (this.fixedHeader()) {
             fixedLabels(this);
+            
         } else {
             this._parentElement.select(".rows-wrapper").remove();
             this._parentElement.select(".cols-wrapper").remove();
             this._parentElement
                 .style("overflow", "auto")
-                .style("poisition", "relative")
+                .style("position", "relative")
                 .style("overflow", "hidden")
             ;
             element
@@ -389,6 +410,7 @@
 
     Table.prototype.headerClick = function (column, idx) {
         var context = this;
+        console.log(idx, column);
         if (this._currentSort !== idx) {
             this._currentSort = idx;
             this._currentSortOrder = 1;
@@ -414,9 +436,10 @@
         return this;
     };
 
-    Table.prototype.selectionBagClick = function (d, i, j) {
+    Table.prototype.selectionBagClick = function (d) {
         if (d3.event.shiftKey) {
             var inRange = false;
+            var rows = [];
             var selection = this._data.filter(function (row, i) {
                 var lastInRangeRow = false;
                 if (row === d || row === this._selectionPrevClick) {
@@ -424,10 +447,14 @@
                         lastInRangeRow = true;
                     }
                     inRange = !inRange;
+                    rows.push(i);
+
                 }
                 return inRange || lastInRangeRow;
             }, this);
+            
             this.selection(selection);
+            return rows;
         } else {
             this._selectionBag.click(this._createSelectionObject(d), d3.event);
             this._selectionPrevClick = d;

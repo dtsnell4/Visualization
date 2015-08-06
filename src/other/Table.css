@@ -3,6 +3,10 @@
     border-width: 1px;
     border-color: #999999;
     border-collapse: collapse;
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
 }
 
 .other_Table th, .labels-wrapper th {
@@ -51,35 +55,4 @@
     border-color: #a9c6c9;
     white-space: nowrap;
     box-sizing:border-box;
-}
-
-
-.other_Table .outer-table-wrapper{
-    position:relative;
-}
-
-#outer-table-wrapper .table-wrapper,
-#outer-table-wrapper .rows-wrapper,
-#outer-table-wrapper .other_table {
-    position:absolute;
-}
-#outer-table-wrapper .rows-wrapper,
-#outer-table-wrapper .cols-wrapper{
-    overflow: hidden;
-}
-.other_Table .cols-wrapper > .labels-wrapper{
-    position:relative;
-}
-.other_Table .col-label{
-    text-align: center;
-}
-.other_Table #outer-table-wrapper {
-    width:700px;
-    height:700px;
-    overflow:hidden;
-}
-.other_Table #outer-table-wrapper .other_Table{
-    width:700px;
-    height:700px;
-    overflow:scroll;
 }
