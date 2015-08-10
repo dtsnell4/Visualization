@@ -77,11 +77,7 @@
 
     Table.prototype.enter = function (domNode, element) {
         HTMLWidget.prototype.enter.apply(this, arguments);
-        this._parentElement
-            .style("overflow", "hidden")
-            .style("position", "relative")
-            .attr("class", "test")
-        ;
+
         this.table = element.append("table").attr("id", "table" + this._id);
         this.thead = this.table.append("thead").append("tr");
         this.tbody = this.table.append("tbody");
@@ -137,13 +133,10 @@
     Table.prototype.update = function (domNode, element) {
         HTMLWidget.prototype.update.apply(this, arguments);
         var context = this;
-        element
-            .style("height", this.target().style.height)
-            .style("overflow", "auto")
+        this._parentElement
+            .style("position", "relative")
+            .style("overflow", "hidden")
         ;
-        ///////////////////////////////////////////////////////
-        console.log(element);
-        this._parentElement.style("height", this.target().style.height);
         
         var th = this.thead.selectAll("th").data(this._columns, function (d) { return d;});
         th
@@ -225,24 +218,53 @@
             .on("click.selectionBag", function (d, i) {
                 var selected = context.selectionBagClick(d) || [i];
                 context.render();
-                var idx = selected[0];
-                while (idx <= selected[selected.length - 1]) {
-                    var xx = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][idx];
-                    if (xx !== undefined) {
-                        xx.classList.add("selected");
-                    }   
-                    idx++;
-                }
-               
+//                var idx = selected[0];
+//                while (idx <= selected[selected.length - 1]) {
+//                    var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][idx];
+//                    if (el !== undefined) {
+//                        d3.select(el).classed("selected", true);
+//                        if (idx === i) {
+//                            d3.select(el).classed("hover", true);
+//                        }
+//                    }   
+//                    idx++;
+//                }
             })
             .on("click", function (d) {
                 context.click(context.rowToObj(d));
             })
+            .on("mouseover", function(d, i) {
+                var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][i];
+                d3.select(el).classed("hover", true);
+                var that = context.table.selectAll("tbody tr")[0][i];
+                d3.select(that).classed("hover", true);
+                if (that.className === "selected") {
+                    d3.select(el).classed("selected", true);
+                };
+            })
+            .on("mouseout", function(d, i) {
+                var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][i];
+                d3.select(el).classed("hover", false);
+                d3.select(context.table.selectAll("tbody tr")[0][i]).classed("hover", false);
+            })
         ;
 
         rows
-            .attr("class", function (d) {
+            .attr("class", function (d, i) {
                 if (context._selectionBag.isSelected(context._createSelectionObject(d))) {
+                    
+                    
+                    
+ ////////////////////////////DO ON ROWSELECTION
+                    
+                    
+//                    console.log(context._selectionBag, context._createSelectionObject(d));
+//                    var xx = d3.selectAll(".rows-wrapper tbody tr")
+//                            .filter(function (d, j) { return j === i;})
+//                            .classed("fucker", true)
+//                    ;
+//                        console.log(xx);
+//                        xx.exit().remove();
                     return "selected";
                 }
             })
@@ -283,21 +305,16 @@
             divrow.enter().append("div").attr("class","rows-wrapper");
             divrow.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
             divrow.exit().remove();
-var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
-            divcol.enter().append("div").attr("class","cols-wrapper");
-            divcol.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
-            divcol.exit().remove();
 
-
-            var outerTableWrapper = context._parentElement[0][0];
+            var outerTableWrapper = context._parentElement.node();
             var rowsWrapper = context._parentElement.select(".rows-wrapper");
             var colsWrapper = context._parentElement.select(".cols-wrapper");
             var colLabelsWrapper = colsWrapper.select('.labels-wrapper');
             var rowLabelsWrapper = rowsWrapper.select('.labels-wrapper');
             var rowSelection = context.table.selectAll('tbody > tr > td:first-child');
-            var rowWrapperWidth = rowSelection.style("width");
+            var rowWrapperWidth = rowSelection.node().getBoundingClientRect().width;
             var theadSelection = context.table.select('thead');
-            var colWrapperHeight = theadSelection.style("height");
+            var colWrapperHeight = theadSelection.node().getBoundingClientRect().height;
 
             _copyLabelContents(context._id);
             _setOnScrollEvents(domNode);
@@ -314,7 +331,6 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
             }
             function _copyLabelContents(){
                 var theadSelection = context.table.select('thead');
-                var colWrapperHeight = theadSelection.style("height");
 
                 colLabelsWrapper.html(theadSelection.html());
                 colLabelsWrapper.style("width", context.table.style("width"));
@@ -331,7 +347,7 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
                 
                 var borderWidth = parseInt(context.table.select("td").style("border-width"));
                 
-                var rowContents = "<thead><tr><th style='width: " + parseInt(rowWrapperWidth) + borderWidth + "px'>" +  origThead[0][0].innerHTML + "</th></tr></thead>";
+                var rowContents = "<thead><tr><th style='width: " + parseInt(rowWrapperWidth) + parseInt(borderWidth) + "px'>" +  origThead[0][0].innerHTML + "</th></tr></thead>";
                 
                 rowSelection[0].forEach(function(row){
                     rowContents += '<tr><td class="row-label">'+ row.innerHTML +'</td></tr>';
@@ -342,26 +358,43 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
                     .style("position", "absolute")
                 ;
                 rowLabelsWrapper.style("margin-top", colWrapperHeight);
-
-                var newTableHeight = outerTableWrapper.offsetHeight - parseInt(colWrapperHeight);
-                var newTableWidth = outerTableWrapper.offsetWidth - parseInt(rowWrapperWidth);
                 
+                rowLabelsWrapper.selectAll("tr")
+                    .on("click", function(d, i) {
+                        d3.select(rows[0][i]).on("click.selectionBag")(rows.data()[i-1], i-1)
+                        ;
+                    })
+                    .on("mouseover", function(d, i) {
+                        d3.select(rows[0][i]).on("mouseover")(rows.data()[i-1], i-1)
+                        ;
+                    })
+                    .on("mouseout", function(d, i) {
+                        d3.select(rows[0][i]).on("mouseout")(rows.data()[i-1], i-1)
+                        ;
+                    })
+                ;
+                
+                var newTableHeight = parseInt(outerTableWrapper.style.height) - parseInt(colWrapperHeight);
+                var newTableWidth = parseInt(outerTableWrapper.style.width) - parseInt(rowWrapperWidth);
+                var maxWidth = context.table.node().getBoundingClientRect().width - rowWrapperWidth + context.getScrollbarWidth();
+                var finalWidth = newTableWidth > maxWidth ? maxWidth : newTableWidth;
                 element
-                    .style("width", newTableWidth + "px")
+                    .style("width", finalWidth + "px")
                     .style("height", newTableHeight + "px")
                     .style("position", "absolute")
-                    .style("top", colWrapperHeight)
-                    .style("left", rowWrapperWidth)
+                    .style("top", colWrapperHeight + "px")
+                    .style("left", rowWrapperWidth + "px")
+                    .style("overflow", "auto")
                 ;
                 context.table
-                    .style("margin-top", "-" + colWrapperHeight)
-                    .style("margin-left", "-" + rowWrapperWidth)
+                    .style("margin-top", "-" + colWrapperHeight + "px")
+                    .style("margin-left", "-" + rowWrapperWidth + "px")
                 ;
                 colsWrapper
                     .style("position", "absolute")
                 ;
                 rowsWrapper
-                    .style("width", rowWrapperWidth)
+                    .style("width", rowWrapperWidth + "px")
                     .style("height", newTableHeight + "px")
                     .style("position", "absolute")
                 ;
@@ -373,26 +406,22 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
                     context.headerClick(d, idx);
                 })
             ;
-
         }
-        
+        this.resize();
         if (this.fixedHeader()) {
             fixedLabels(this);
-            
         } else {
             this._parentElement.select(".rows-wrapper").remove();
             this._parentElement.select(".cols-wrapper").remove();
-            this._parentElement
-                .style("overflow", "auto")
-                .style("position", "relative")
-                .style("overflow", "hidden")
-            ;
             element
                 .style("margin-top", "0")
                 .style("margin-left", "0")
                 .style("top", "0")
                 .style("left", "0")
                 .style("width", "100%")
+                .style("height", this._parentElement.style("height"))
+                .style("overflow", "auto")
+
             ;
             this.table
                 .style("top", "0")
@@ -410,7 +439,6 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
 
     Table.prototype.headerClick = function (column, idx) {
         var context = this;
-        console.log(idx, column);
         if (this._currentSort !== idx) {
             this._currentSort = idx;
             this._currentSortOrder = 1;
@@ -437,6 +465,7 @@ var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
     };
 
     Table.prototype.selectionBagClick = function (d) {
+        console.log(d3.event.ctrlKey);
         if (d3.event.shiftKey) {
             var inRange = false;
             var rows = [];

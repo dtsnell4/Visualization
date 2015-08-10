@@ -29,6 +29,7 @@
     background-color:#dcf1ff;
     color:black;
 }
+
 .rows-wrapper tr {
     background-color:#BCE1FB;
     color:black;
@@ -39,11 +40,20 @@
     color: white;
 }
 
-.other_Table tr:hover {
+.other_Table tr:hover, .other_Table tr.hover {
     background-color: #bfd7e7;
 }
 
-.other_Table tr.selected:hover {
+.rows-wrapper tbody tr.hover {
+    background-color: #bfd7e7;
+}
+
+.rows-wrapper tbody tr.hover.selected {
+    background-color:#5ea8db;
+    color: white;
+}
+
+.other_Table tr.selected:hover, .other_Table tr.selected.hover {
     background-color:#5ea8db;
     color: white;
 }
