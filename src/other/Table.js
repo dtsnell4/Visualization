@@ -225,6 +225,7 @@
             })
             .on("mouseover", function(d, i) {
                 var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][i];
+                if (el === undefined) { return; }
                 d3.select(el).classed("hover", true);
                 var that = context.table.selectAll("tbody tr")[0][i];
                 d3.select(that).classed("hover", true);
