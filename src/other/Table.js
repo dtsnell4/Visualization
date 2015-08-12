@@ -70,8 +70,9 @@
         return this;
     };
 
-    Table.prototype.publish("pagination", false, "boolean", "enable or disable pagination",null,{tags:['Private']});
-    Table.prototype.publish("fixedHeader", false, "boolean", "enable or disable fixed table header",null,{tags:['Private']});
+    Table.prototype.publish("pagination", false, "boolean", "Enable or disable pagination",null,{tags:['Private']});
+//    should the following default to true?
+    Table.prototype.publish("fixedHeader", false, "boolean", "Enable or disable fixed table header and first column",null,{tags:['Private']});
     Table.prototype.publishProxy("itemsPerPage", "_paginator");
     Table.prototype.publishProxy("pageNumber", "_paginator", "pageNumber",1);
 
@@ -216,19 +217,8 @@
             .enter()
             .append("tr")
             .on("click.selectionBag", function (d, i) {
-                var selected = context.selectionBagClick(d) || [i];
+                context.selectionBagClick(d);
                 context.render();
-//                var idx = selected[0];
-//                while (idx <= selected[selected.length - 1]) {
-//                    var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][idx];
-//                    if (el !== undefined) {
-//                        d3.select(el).classed("selected", true);
-//                        if (idx === i) {
-//                            d3.select(el).classed("hover", true);
-//                        }
-//                    }   
-//                    idx++;
-//                }
             })
             .on("click", function (d) {
                 context.click(context.rowToObj(d));
@@ -240,7 +230,7 @@
                 d3.select(that).classed("hover", true);
                 if (that.className === "selected") {
                     d3.select(el).classed("selected", true);
-                };
+                }
             })
             .on("mouseout", function(d, i) {
                 var el = context._parentElement.selectAll(".rows-wrapper tbody tr")[0][i];
@@ -252,19 +242,6 @@
         rows
             .attr("class", function (d, i) {
                 if (context._selectionBag.isSelected(context._createSelectionObject(d))) {
-                    
-                    
-                    
- ////////////////////////////DO ON ROWSELECTION
-                    
-                    
-//                    console.log(context._selectionBag, context._createSelectionObject(d));
-//                    var xx = d3.selectAll(".rows-wrapper tbody tr")
-//                            .filter(function (d, j) { return j === i;})
-//                            .classed("fucker", true)
-//                    ;
-//                        console.log(xx);
-//                        xx.exit().remove();
                     return "selected";
                 }
             })
@@ -295,24 +272,37 @@
         ;
         this._paginator.render();
         
-        function fixedLabels(context){
+        function fixedLabels(){
             var divcol = context._parentElement.selectAll(".cols-wrapper").data([0]);
-            divcol.enter().append("div").attr("class","cols-wrapper");
-            divcol.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
+            divcol
+                .enter()
+                .append("div")
+                .attr("class","cols-wrapper")
+            ;
+            divcol.selectAll(".labels-wrapper").data([0])
+                .enter()
+                .append("table")
+                .classed("labels-wrapper", true)
+            ;
             divcol.exit().remove();
 
             var divrow = context._parentElement.selectAll(".rows-wrapper").data([0]);
-            divrow.enter().append("div").attr("class","rows-wrapper");
-            divrow.selectAll(".labels-wrapper").data([0]).enter().append("table").classed("labels-wrapper", true);
+            divrow
+                .enter()
+                .append("div")
+                .attr("class","rows-wrapper")
+            ;
+            divrow.selectAll(".labels-wrapper").data([0])
+                .enter()
+                .append("table")
+                .classed("labels-wrapper", true)
+            ;
             divrow.exit().remove();
 
-            var outerTableWrapper = context._parentElement.node();
             var rowsWrapper = context._parentElement.select(".rows-wrapper");
             var colsWrapper = context._parentElement.select(".cols-wrapper");
             var colLabelsWrapper = colsWrapper.select('.labels-wrapper');
             var rowLabelsWrapper = rowsWrapper.select('.labels-wrapper');
-            var rowSelection = context.table.selectAll('tbody > tr > td:first-child');
-            var rowWrapperWidth = rowSelection.node().getBoundingClientRect().width;
             var theadSelection = context.table.select('thead');
             var colWrapperHeight = theadSelection.node().getBoundingClientRect().height;
 
@@ -323,43 +313,55 @@
                 domNode.onscroll = function(e){
                     var leftDelta = e.target.scrollLeft;
                     var topDelta = e.target.scrollTop;
-                    var height = parseInt(colWrapperHeight);
-                    colLabelsWrapper.style("margin-left", -leftDelta + "px");
-                    rowLabelsWrapper.style("margin-top", -topDelta + height + "px");
-                    rowLabelsWrapper.select("thead").style("margin-top", topDelta - height + "px");
+                    colLabelsWrapper
+                        .style("margin-left", -leftDelta + "px")
+                    ;
+                    rowLabelsWrapper
+                        .style("margin-top", -topDelta + colWrapperHeight + "px")
+                    ;
+                    rowLabelsWrapper.select("thead")
+                        .style("margin-top", topDelta - colWrapperHeight + "px")
+                    ;
                 };
             }
             function _copyLabelContents(){
-                var theadSelection = context.table.select('thead');
-
                 colLabelsWrapper.html(theadSelection.html());
-                colLabelsWrapper.style("width", context.table.style("width"));
+                colLabelsWrapper
+                    .style("width", context.table.style("width"))
+                ;
                 
                 var origThead = element.selectAll("th");
                 var newThead = context._parentElement.selectAll(".cols-wrapper th");
                 origThead[0].forEach(function(el, i){
                     newThead[0][i].style.width = getComputedStyle(el).getPropertyValue("width");
                 });                
-                
                 newThead.on("click", function(d, idx){
                     context.headerClick(d, idx);
                 });
                 
                 var borderWidth = parseInt(context.table.select("td").style("border-width"));
-                
-                var rowContents = "<thead><tr><th style='width: " + parseInt(rowWrapperWidth) + parseInt(borderWidth) + "px'>" +  origThead[0][0].innerHTML + "</th></tr></thead>";
+                var rowSelection = context.table.selectAll('tbody > tr > td:first-child');
+                var rowWrapperWidth = rowSelection.node().getBoundingClientRect().width;
+                var theadWidth = parseInt(rowWrapperWidth) + parseInt(2 * borderWidth);
+                var rowContents = "<thead><tr>";
+                rowContents += "<th style='width:" + theadWidth + "px'>";
+                rowContents += origThead[0][0].innerHTML + "</th></tr></thead>";
                 
                 rowSelection[0].forEach(function(row){
                     rowContents += '<tr><td class="row-label">'+ row.innerHTML +'</td></tr>';
                 });
-                rowLabelsWrapper.html(rowContents).style("width", rowWrapperWidth);
+                rowLabelsWrapper.html(rowContents)
+                    .style("width", rowWrapperWidth)
+                ;
                 rowLabelsWrapper.select("thead")
                     .style("margin-top", "-" + colWrapperHeight)
                     .style("position", "absolute")
+                    .style("width", theadWidth + "px")
                 ;
                 rowLabelsWrapper.style("margin-top", colWrapperHeight);
                 
-                rowLabelsWrapper.selectAll("tr")
+                var fixedRows = rowLabelsWrapper.selectAll("tr");
+                fixedRows
                     .on("click", function(d, i) {
                         d3.select(rows[0][i]).on("click.selectionBag")(rows.data()[i-1], i-1)
                         ;
@@ -372,10 +374,15 @@
                         d3.select(rows[0][i]).on("mouseout")(rows.data()[i-1], i-1)
                         ;
                     })
+                    .attr("class", function(d, i) {
+                        if (rows[0][i-1] && (d3.select(rows[0][i-1]).classed("selected")) === true) {
+                            return rows[0][i-1].parentElement.querySelector(':hover') === rows[0][i-1] ? "selected hover" : "selected";
+                        }
+                    })
                 ;
                 
-                var newTableHeight = parseInt(outerTableWrapper.style.height) - parseInt(colWrapperHeight);
-                var newTableWidth = parseInt(outerTableWrapper.style.width) - parseInt(rowWrapperWidth);
+                var newTableHeight = parseInt(context._parentElement.node().style.height) - parseInt(colWrapperHeight);
+                var newTableWidth = parseInt(context._parentElement.node().style.width) - parseInt(rowWrapperWidth);
                 var maxWidth = context.table.node().getBoundingClientRect().width - rowWrapperWidth + context.getScrollbarWidth();
                 var finalWidth = newTableWidth > maxWidth ? maxWidth : newTableWidth;
                 element
@@ -399,7 +406,9 @@
                     .style("position", "absolute")
                 ;
             }
-            rowLabelsWrapper.style("margin-top", -domNode.scrollTop + parseInt(colWrapperHeight) + "px");
+            rowLabelsWrapper
+                .style("margin-top", -domNode.scrollTop + parseInt(colWrapperHeight) + "px")
+            ;
             rowLabelsWrapper.select("thead")
                 .style("margin-top", domNode.scrollTop - parseInt(colWrapperHeight) + "px")
                 .on("click", function(d, idx){
@@ -409,7 +418,7 @@
         }
         this.resize();
         if (this.fixedHeader()) {
-            fixedLabels(this);
+            fixedLabels();
         } else {
             this._parentElement.select(".rows-wrapper").remove();
             this._parentElement.select(".cols-wrapper").remove();
@@ -421,7 +430,6 @@
                 .style("width", "100%")
                 .style("height", this._parentElement.style("height"))
                 .style("overflow", "auto")
-
             ;
             this.table
                 .style("top", "0")
@@ -465,7 +473,6 @@
     };
 
     Table.prototype.selectionBagClick = function (d) {
-        console.log(d3.event.ctrlKey);
         if (d3.event.shiftKey) {
             var inRange = false;
             var rows = [];
@@ -477,11 +484,9 @@
                     }
                     inRange = !inRange;
                     rows.push(i);
-
                 }
                 return inRange || lastInRangeRow;
             }, this);
-            
             this.selection(selection);
             return rows;
         } else {

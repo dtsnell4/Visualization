@@ -3,11 +3,13 @@
     border-width: 1px;
     border-color: #999999;
     border-collapse: collapse;
-    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
-    -moz-user-select: none; /* mozilla browsers */
-    -khtml-user-select: none; /* webkit (konqueror) browsers */
-    -ms-user-select: none; /* IE10+ */
 }
+/*Please take note of text selection on the table, especially in regards to the fixed first column, as well as shift-clicking.  The following code would disable text selection completely.  Which would be the lesser evil?*/
+/*.other_Table, .labels-wrapper {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}*/
 
 .other_Table th, .labels-wrapper th {
     padding:5px 10px;
@@ -35,16 +37,15 @@
     color:black;
 }
 
+.rows-wrapper .labels-wrapper {
+    width: 100%;
+}
 .other_Table tr.selected, .rows-wrapper tr.selected {
     background-color:#f48a00;
     color: white;
 }
 
-.other_Table tr:hover, .other_Table tr.hover {
-    background-color: #bfd7e7;
-}
-
-.rows-wrapper tbody tr.hover {
+.other_Table tr:hover, .other_Table tr.hover, .rows-wrapper tbody tr.hover {
     background-color: #bfd7e7;
 }
 
