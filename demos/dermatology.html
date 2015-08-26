@@ -36,6 +36,14 @@
         });
     </script>
     -->
+
+    <script>
+        require.config({
+            paths: {
+                "test": "../test"
+            }
+        });
+    </script>
 </head>
 <body onresize="doResize();">
     <header>
@@ -46,91 +54,6 @@
                     <li>
                         <prompt>Widget:</prompt>
                         <select id="widgetSelect" onchange="testWidget(this.value);">
-                            <option value="src/common/Shape">Shape</option>
-                            <option value="src/common/Text">Text</option>
-                            <option value="src/common/TextBox">TextBox</option>
-                            <option value="src/common/FAChar">FAChar</option>
-                            <option value="src/common/Icon">Icon</option>
-                            <option value="src/common/List">List</option>
-                            <option value="src/common/Menu">Menu</option>
-                            <option value="src/common/Surface">Surface</option>
-                            <option value="src/common/ResizeSurface">ResizeSurface</option>
-                            <option value="src/c3chart/Area">C3 Area</option>
-                            <option value="src/c3chart/Bar">C3 Bar</option>
-                            <option value="src/c3chart/Column">C3 Column</option>
-                            <option value="src/c3chart/Line">C3 Line</option>
-                            <option value="src/c3chart/Scatter">C3 Scatter</option>
-                            <option value="src/c3chart/Step">C3 Step</option>
-                            <option value="src/c3chart/Pie">C3 Pie</option>
-                            <option value="src/c3chart/Donut">C3 Donut</option>
-                            <option value="src/c3chart/Gauge">C3 Gauge</option>
-                            <option value="src/google/Pie">Google Pie</option>
-                            <option value="src/google/Bar">Google Bar</option>
-                            <option value="src/google/Column">Google Column</option>
-                            <option value="src/google/Line">Google Line</option>
-                            <option value="src/google/Area">Google Area</option>
-                            <option value="src/google/Scatter">Google Scatter</option>
-                            <option value="src/google/Timeline">Google Timeline</option>
-                            <option value="src/google/TreeMap">Google TreeMap</option>
-                            <option value="src/chart/Summary">Summary</option>
-                            <option value="src/chart/Pie">Pie</option>
-                            <option value="src/chart/Bubble">Bubble</option>
-                            <option value="src/chart/Column">Column</option>
-                            <option value="src/chart/Scatter">Scatter</option>
-                            <option value="src/chart/Line">Line</option>
-                            <option value="src/chart/Area">Area</option>
-                            <option value="src/chart/Step">Step</option>
-                            <option value="src/chart/MultiChart">Multi Chart</option>
-                            <option value="src/chart/MultiChartSurface">Multi Chart Surface</option>
-                            <option value="src/form/Form">Form</option>
-                            <option value="src/map/GMap">Google Map</option>
-                            <option value="src/map/GMapHeat">Google Map - Heat</option>
-                            <option value="src/map/GMapGraph">Google Map - Graph</option>
-                            <option value="src/map/ChoroplethStates">Choropleth States</option>
-                            <option value="src/map/ChoroplethStatesHeat">Choropleth States - Heat</option>
-                            <option value="src/map/ChoroplethCounties">Choropleth Counties</option>
-                            <option value="src/map/ChoroplethCountries">Choropleth Countries</option>
-                            <option value="src/tree/Dendrogram">Tree Dendrogram</option>
-                            <option value="src/tree/CirclePacking">Tree CirclePacking</option>
-                            <option value="src/tree/SunburstPartition">Tree SunburstPartition</option>
-                            <option value="src/graph/Graph">Graph</option>
-                            <option value="src/graph/Vertex">Graph Vertex</option>
-                            <option value="src/other/Table">Table</option>
-                            <option value="src/other/WordCloud">Word Cloud</option>
-                            <option value="src/other/HeatMap">Heat Map</option>
-                            <option value="src/form/Slider">Slider</option>
-                            <option value="src/marshaller/HTML">HTML Marshaller</option>
-                            <option value="src/marshaller/Graph">Graph Marshaller</option>
-                            <option value="src/layout/AbsoluteSurface">AbsoluteSurface Layout</option>
-                            <option value="src/layout/Surface">Surface Layout</option>
-                            <option value="src/layout/Cell">Cell Layout</option>
-                            <option value="src/layout/Grid">Grid Layout</option>
-                            <option value="src/layout/Border">Border Layout</option>
-                            <option value="src/layout/Layered">Layered Layout</option>
-                            <option value="src/layout/Tabbed">Tabbed Layout</option>
-                            <option value="src/layout/Popup">Popup Layout</option>
-                            <option value="src/amchart/Area">AmChart Area</option>
-                            <option value="src/amchart/Bar">AmChart Bar</option>
-                            <option value="src/amchart/Bubble">AmChart Bubble</option>
-                            <option value="src/amchart/Candle">AmChart Candle</option>
-                            <option value="src/amchart/FloatingColumn">AmChart Floating Column</option>
-                            <option value="src/amchart/Funnel">AmChart Funnel</option>
-                            <option value="src/amchart/Gauge">AmChart Gauge</option>
-                            <option value="src/amchart/Line">AmChart Line</option>
-                            <option value="src/amchart/Pie">AmChart Pie</option>
-                            <option value="src/amchart/Polar">AmChart Polar</option>
-                            <option value="src/amchart/Pyramid">AmChart Pyramid</option>
-                            <option value="src/amchart/Scatter">AmChart Scatter</option>
-                        </select>
-                    </li>
-                    <li>
-                        <prompt style="margin-left:8px;">Theme:</prompt>
-                        <select id="themeSelect" onchange="testTheme(this.value);">
-                            <option value="Default">Default</option>
-                            <option value="LN Red/Grey">LN Red/Grey</option>
-                            <option value="Green/Light-Grey">Green/Light-Grey</option>
-                            <option value="Blue-Bordered">Blue-Bordered</option>
-                            <option value="Red-Bordered">Red-Bordered</option>
                         </select>
                     </li>
                     <li>
@@ -148,6 +71,16 @@
                     <li>
                         <label for="showThemeText">&nbsp;&nbsp;Theme Text:</label>
                         <input id="showThemeText" type="checkbox" onchange="showThemeText(this.checked);" />
+                    </li>
+                    <li>
+                        <prompt style="margin-left:8px;">Theme:</prompt>
+                        <select id="themeSelect" onchange="testTheme(this.value);">
+                            <option value="Default">Default</option>
+                            <option value="LN Red/Grey">LN Red/Grey</option>
+                            <option value="Green/Light-Grey">Green/Light-Grey</option>
+                            <option value="Blue-Bordered">Blue-Bordered</option>
+                            <option value="Red-Bordered">Red-Bordered</option>
+                        </select>
                     </li>
                 </ul>
             </nav>
@@ -193,7 +126,26 @@
         var showProperties = null;
         var debouncedResize = null;
 
-        require(["src/layout/Surface", "src/layout/Grid", "src/other/Persist", "src/other/PropertyEditor"], function (Surface, Grid, Persist, PropertyEditor) {
+        require(["d3", "src/layout/Surface", "src/layout/Grid", "src/other/Persist", "src/other/PropertyEditor", "test/Factory"], function (d3, Surface, Grid, Persist, PropertyEditor, testFactory) {
+            var samples = [];
+            testFactory.categories.forEach(function (category) {
+                category.widgets.forEach(function(widget) {
+                    widget.samples.forEach(function (sample) {
+                        samples.push({
+                            category: category,
+                            widget: widget,
+                            sample: sample
+                        })
+                    });
+                });
+            });
+            var sampleSelect = d3.select("#widgetSelect");
+            var sampleOptions = sampleSelect.selectAll("option").data(samples);
+            sampleOptions.enter()
+                .append("option")
+                .attr("value", function (d, idx) { return idx; })
+                .text(function (d) { return "[" + d.category.label + "] " + d.widget.label + " - " + d.sample.label; })
+            ;
             var propEditor = new PropertyEditor().showColumns(false).showData(false);
             propEditor.onChange =  Surface.prototype.debounce(function (widget, propID) {
                 if (propID === "columns") {
@@ -268,9 +220,9 @@
                 }
             }
 
-            testWidget = function (widgetPath, params) {
-                require([widgetPath], function (Widget) {
-                    currWidget = new Widget().testData();
+            testWidget = function (idx, params) {
+                testFactory.create(samples[idx].category.factory, samples[idx].widget.id, samples[idx].sample.id, function(widget) {
+                    currWidget = widget;
                     if (params) {
                         for (var key in params) {
                             currWidget[key](params[key]);
