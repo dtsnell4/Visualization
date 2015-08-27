@@ -7,7 +7,12 @@
     }
 }(this, function () {
     return {
-        OneD: {},
+        OneD: {
+            subjects: {
+                columns: ["Result"],
+                data: [66]
+            }
+        },
         TwoD: {
             subjects: {
                 columns: ["Subject"],
