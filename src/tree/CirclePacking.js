@@ -32,11 +32,12 @@
             .append("g")
             .attr("transform", "rotate(30)")
         ;
+        console.log(this.svg);
     };
 
     CirclePacking.prototype.update = function (domNode, element) {
         var context = this;
-
+debugger
         this._palette = this._palette.switch(this.paletteID());
         if (this.useClonedPalette()) {
             this._palette = this._palette.cloneNotExists(this.paletteID() + "_" + this.id());
@@ -51,7 +52,7 @@
 
         this.circle = this.svg.selectAll("circle")
             .data(nodes)
-          .enter().append("circle")
+            .enter().append("circle")
             .attr("class", function (d) { return d.parent ? d.children ? "node" : "node leaf" : "node root"; })
             .style("fill", function (d) { return context._palette(d.label); })
             .on("click", function (d) { context.click(d); })

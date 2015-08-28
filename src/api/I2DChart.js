@@ -11,16 +11,16 @@
     I2DChart.prototype._palette = Palette.ordinal("default");
 
     //  Data ---
-    I2DChart.prototype.testData = function () {
-        this.columns(["Subject", "2nd Year"]);
-        this.data([
-            ["Geography", 75],
-            ["English", 45],
-            ["Math", 98],
-            ["Science", 66]
-        ]);
-        return this;
-    };
+//    I2DChart.prototype.testData = function () {
+//        this.columns(["Subject", "2nd Year"]);
+//        this.data([
+//            ["Geography", 75],
+//            ["English", 45],
+//            ["Math", 98],
+//            ["Science", 66]
+//        ]);
+//        return this;
+//    };
 
     //  Events  ---
     I2DChart.prototype.click = function (row, column, selected) {

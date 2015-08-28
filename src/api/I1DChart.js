@@ -11,11 +11,11 @@
     I1DChart.prototype._palette = Palette.rainbow("default");
 
     //  Data ---
-    I1DChart.prototype.testData = function () {
-        this.columns("Result");
-        this.data(66);
-        return this;
-    };
+//    I1DChart.prototype.testData = function () {
+//        this.columns("Result");
+//        this.data(66);
+//        return this;
+//    };
 
     //  Events  ---
     I1DChart.prototype.click = function (row, column, selected) {

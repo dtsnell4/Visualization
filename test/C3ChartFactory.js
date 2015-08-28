@@ -1,11 +1,11 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["./DataFactory", "src/chart/Column", "src/chart/Bubble", "src/chart/Scatter", "src/chart/Line", "src/chart/Area", "src/chart/Pie", "src/chart/Step", "src/chart/Summary", "src/chart/MultiChart", "src/chart/MultiChartSurface"], factory);
+        define(["./DataFactory", "src/c3chart/Column", "src/c3chart/Donut", "src/c3chart/Scatter", "src/c3chart/Line", "src/c3chart/Area", "src/c3chart/Pie", "src/c3chart/Step", "src/c3chart/Gauge"], factory);
     } else {
-        root.test_ChartFactory = factory(root.test_DataFactory, root.chart_Column, root.chart_Bubble, root.chart_Scatter, root.chart_Line, root.chart_Area, root.chart_Pie, root.chart_Step, root.chart_Summary, root.chart_MultiChart, root.chart_MultiChartSurface);
+        root.test_ChartFactory = factory(root.test_DataFactory, root.c3chart_Column, root.c3chart_Donut, root.c3chart_Scatter, root.c3chart_Line, root.c3chart_Area, root.c3chart_Pie, root.c3chart_Step, root.c3chart_Gauge);
     }
-}(this, function (DataFactory, Column, Bubble, Scatter, Line, Area, Pie, Step, Summary, MultiChart, MultiChartSurface) {
+}(this, function (DataFactory, Column, Donut, Scatter, Line, Area, Pie, Step, Gauge) {
     return {
         column: {
             simple: function () {
@@ -13,18 +13,13 @@
                     .columns(DataFactory.ND.subjects.columns)
                     .data(DataFactory.ND.subjects.data)
                 ;
-            },
-            bar: function () {
-                return this.simple()
-                    .orientation("vertical")
-                ;
             }
         },
-        bubble: {
+        donut: {
             simple: function () {
-                return new Bubble()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
+                return new Donut()
+                    .columns(DataFactory.TwoD.subjects.columns)
+                    .data(DataFactory.TwoD.subjects.data)
                 ;
             }
         },
@@ -55,8 +50,8 @@
         pie: {
             simple: function () {
                 return new Pie()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
+                    .columns(DataFactory.TwoD.subjects.columns)
+                    .data(DataFactory.TwoD.subjects.data)
                 ;
             }
         },
@@ -68,27 +63,11 @@
                 ;
             }
         },
-        summary: {
-            simple: function () {
-                return new Summary()
+        gauge: {
+            Gauge: function () {
+                return new Gauge()
                     .columns(DataFactory.OneD.subjects.columns)
                     .data(DataFactory.OneD.subjects.data)
-                ;
-            }
-        },
-        multichart: {
-            simple: function () {
-                return new MultiChart()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
-                ;
-            }
-        },
-        multichartsurface: {
-            simple: function () {
-                return new MultiChartSurface()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
                 ;
             }
         }

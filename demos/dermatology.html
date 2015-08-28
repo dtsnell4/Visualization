@@ -223,7 +223,7 @@
             testWidget = function (idx, params) {
                 testFactory.create(samples[idx].category.factory, samples[idx].widget.id, samples[idx].sample.id, function(widget) {
                     currWidget = widget;
-                    console.log(widget);
+//                    console.log(widget);
                     if (params) {
                         for (var key in params) {
                             currWidget[key](params[key]);
