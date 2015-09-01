@@ -14,18 +14,18 @@
                     .widgetY(DataFactory.AbsoluteSurface.simple.widgetY)
                     .widgetWidth(DataFactory.AbsoluteSurface.simple.widgetWidth)
                     .widgetHeight(DataFactory.AbsoluteSurface.simple.widgetHeight)
-                    .widget(DataFactory.AbsoluteSurface.simple.widget._text.text(DataFactory.Text.simple.text))
+                    .widget(DataFactory.AbsoluteSurface.simple.widget.text(DataFactory.Text.simple.text))
                 ;
             }
         },
         border: {
             simple: function () {
                 return new Border()
-                    .setContent("topSection",new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent("rightSection",new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent("bottomSection",new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent("leftSection",new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent("centerSection",new TextBox()._text.text(DataFactory.Text.simple.text))
+                    .setContent("topSection",new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent("rightSection",new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent("bottomSection",new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent("leftSection",new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent("centerSection",new TextBox().text(DataFactory.Text.simple.text))
                 ;
             }
         },
@@ -41,12 +41,12 @@
         grid: {
             simple: function () {
                 return new Grid()
-                    .setContent(0, 0, new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent(0, 1, new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent(1, 0, new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent(1, 1, new TextBox()._text.text(DataFactory.Text.simple.text))
-                    .setContent(0, 2, new TextBox()._text.text(DataFactory.Text.simple.text), "Title AAA", 2, 2)
-                    .setContent(2, 0, new TextBox()._text.text(DataFactory.Text.simple.text), "Title BBB", 2, 4)
+                    .setContent(0, 0, new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent(0, 1, new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent(1, 0, new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent(1, 1, new TextBox().text(DataFactory.Text.simple.text))
+                    .setContent(0, 2, new TextBox().text(DataFactory.Text.simple.text), "Title AAA", 2, 2)
+                    .setContent(2, 0, new TextBox().text(DataFactory.Text.simple.text), "Title BBB", 2, 4)
                 ;
             }
         },
@@ -55,9 +55,9 @@
                 var retVal = new Layered();
                 
                 retVal
-                    .addLayer(new AbsoluteSurface().widgetX(0).widgetY(0).widgetWidth(100).widgetHeight(100).widget(new TextBox()._text.text(DataFactory.Text.simple.text)))
-                    .addLayer(new AbsoluteSurface().widgetX(40).widgetY(40).widgetWidth(50).widgetHeight(50).opacity(0.66).widget(new TextBox()._text.text(DataFactory.Text.simple.text)))
-                    .addLayer(new AbsoluteSurface().widgetX(30).widgetY(10).widgetWidth(40).widgetHeight(30).widget(new TextBox()._text.text(DataFactory.Text.simple.text)))
+                    .addLayer(new AbsoluteSurface().widgetX(0).widgetY(0).widgetWidth(100).widgetHeight(100).widget(new TextBox().text(DataFactory.Text.simple.text)))
+                    .addLayer(new AbsoluteSurface().widgetX(40).widgetY(40).widgetWidth(50).widgetHeight(50).opacity(0.66).widget(new TextBox().text(DataFactory.Text.simple.text)))
+                    .addLayer(new AbsoluteSurface().widgetX(30).widgetY(10).widgetWidth(40).widgetHeight(30).widget(new TextBox().text(DataFactory.Text.simple.text)))
                 ;
                 var context = retVal;
                 setInterval(function () {
@@ -103,13 +103,13 @@
         tabbed: {
             simple: function () {
                 return new Tabbed()
-                    .addTab(new TextBox()._text.text(DataFactory.Text.simple.text), "Tab One", true)
-                    .addTab(new TextBox()._text.text(DataFactory.Text.simple.text), "Tab Two")
-                    .addTab(new TextBox()._text.text(DataFactory.Text.simple.text), "Tab Three")
+                    .addTab(new TextBox().text(DataFactory.Text.simple.text), "Tab One", true)
+                    .addTab(new TextBox().text(DataFactory.Text.simple.text), "Tab Two")
+                    .addTab(new TextBox().text(DataFactory.Text.simple.text), "Tab Three")
                     .addTab(new Tabbed()
                                 .labels([]).widgets([])//TODO:Figure out why this is necessary
-                                .addTab(new TextBox()._text.text(DataFactory.Text.simple.text), "Sub Tab One")
-                                .addTab(new TextBox()._text.text(DataFactory.Text.simple.text), "Sub Tab Two", true), "Nested Example")
+                                .addTab(new TextBox().text(DataFactory.Text.simple.text), "Sub Tab One")
+                                .addTab(new TextBox().text(DataFactory.Text.simple.text), "Sub Tab Two", true), "Nested Example")
                 ;
             }
         }

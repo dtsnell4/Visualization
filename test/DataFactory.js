@@ -235,7 +235,7 @@
                 title: ["Hello and welcome!"],
                 menu: ["aaa", "bbb", "ccc"],
                 buttonAnnotations: [{id:"button_1",label:"\uf010",shape:"square",diameter:14,padding:"0px 5px",font:"FontAwesome"}, {id:"button_2",label:"\uf00e",shape:"square",diameter:14,padding:"0px 5px",font:"FontAwesome"}],
-                widget: new Surface().widget(new TextBox()._text.text("Hello\nand\nWelcome!"))
+                widget: new Surface().widget(new TextBox().text("Hello\nand\nWelcome!"))
             }
         },
         AbsoluteSurface: {

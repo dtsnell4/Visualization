@@ -68,7 +68,7 @@
         textbox: {
             simple: function () {
                 return new TextBox()
-                    ._text.text(DataFactory.Text.simple.text)
+                    .text(DataFactory.Text.simple.text)
                 ;
             }
         }
