@@ -32,12 +32,10 @@
             .append("g")
             .attr("transform", "rotate(30)")
         ;
-        console.log(this.svg);
     };
 
     CirclePacking.prototype.update = function (domNode, element) {
         var context = this;
-debugger
         this._palette = this._palette.switch(this.paletteID());
         if (this.useClonedPalette()) {
             this._palette = this._palette.cloneNotExists(this.paletteID() + "_" + this.id());

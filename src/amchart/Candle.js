@@ -29,15 +29,6 @@
     Candle.prototype.publish("stackType", "regular", "set", "Stack Type",["none","regular","100%"],{tags:["Basic"]});
     Candle.prototype.publish("useOhlcLines", false, "boolean", "Use OHLC Lines",null,{tags:["Intermediate"]});
 
-    Candle.prototype.testData = function() {
-        this.columns(["Subject", "low", "open", "close", "high"]);
-        this.data([
-            ["Geography", 10, 15, 35, 40],
-            ["English", 20, 25, 45, 55],
-        ]);
-        return this;
-    };
-
     Candle.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var context = this;

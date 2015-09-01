@@ -64,7 +64,7 @@
             }
         },
         gauge: {
-            Gauge: function () {
+            simple: function () {
                 return new Gauge()
                     .columns(DataFactory.OneD.subjects.columns)
                     .data(DataFactory.OneD.subjects.data)

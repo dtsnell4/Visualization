@@ -26,10 +26,6 @@
         return this;
     };
 
-    Shape.prototype.testData = function () {
-        return this;
-    };
-
     Shape.prototype.intersection = function (pointA, pointB) {
         switch (this.shape()) {
             case "circle":

@@ -31,17 +31,6 @@
     FloatingColumn.prototype.publish("stackType", "regular", "set", "Stack Type",["none","regular","100%"],{tags:["Basic"]});
     FloatingColumn.prototype.publish("tooltipTemplate","[[category]]([[title]]): [[value]]", "string", "Tooltip Text",null,{tags:["Intermediate"]});
 
-    FloatingColumn.prototype.testData = function() {
-        this.columns(["Subject", "open", "close"]);
-        this.data([
-            ["Geography", 15, 35],
-            ["English", 25, 45],
-            ["Math", 10, 35],
-            ["Science", 45, 60]
-        ]);
-        return this;
-    };
-
     FloatingColumn.prototype.columns = function(colArr) {
         if (!arguments.length) return this._columns;
         var context = this;

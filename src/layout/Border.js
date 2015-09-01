@@ -46,18 +46,6 @@
 
     Border.prototype.publish("sectionTypes", [], "array", "Section Types sharing an index with 'content' - Used to determine position/size.", null, { tags: ["Private"] });
 
-    Border.prototype.testData = function () {
-        this
-            .setContent("topSection",new Text().testData())
-            .setContent("rightSection",new Text().testData())
-            .setContent("bottomSection",new Text().testData())
-            .setContent("leftSection",new Text().testData())
-            .setContent("centerSection",new Text().testData())
-        ;
-
-        return this;
-    };
-
     Border.prototype.applyLayoutType = function (layoutType) {
         var layoutObj = this.borderLayoutObject(layoutType);
         this.content().forEach(function (cell, i) {
