@@ -1,11 +1,11 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["../src/form/Input", "../src/common/WidgetArray", "../src/common/TextBox", "src/layout/Surface"], factory);
+        define(["../src/form/Input", "../src/common/WidgetArray", "../src/chart/MultiChartSurface", "../src/layout/Surface", "../src/chart/Column"], factory);
     } else {
-        root.test_DataFactory = factory(root.form_Input, root.common_WidgetArray, root.common_TextBox);
+        root.test_DataFactory = factory(root.form_Input, root.common_WidgetArray, root.chart_MultiChartSurface, root.chart_Column);
     }
-}(this, function (Input, WidgetArray, TextBox, Surface) {
+}(this, function (Input, WidgetArray, MultiChartSurface, Surface, Column) {
     var DataFactory = {
         OneD: {
             subjects: {
@@ -235,7 +235,7 @@
                 title: ["Hello and welcome!"],
                 menu: ["aaa", "bbb", "ccc"],
                 buttonAnnotations: [{id:"button_1",label:"\uf010",shape:"square",diameter:14,padding:"0px 5px",font:"FontAwesome"}, {id:"button_2",label:"\uf00e",shape:"square",diameter:14,padding:"0px 5px",font:"FontAwesome"}],
-                widget: new Surface().widget(new TextBox().text("Hello\nand\nWelcome!"))
+                widget: new Surface().widget(new MultiChartSurface())
             }
         },
         AbsoluteSurface: {
@@ -244,7 +244,7 @@
                 widgetY: [25],
                 widgetWidth: [50],
                 widgetHeight: [50],
-                widget: new TextBox()
+                widget: new Column()
             }
         },
         Layered: {

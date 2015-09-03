@@ -23,8 +23,8 @@
         bubble: {
             simple: function () {
                 return new Bubble()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
+                    .columns(DataFactory.TwoD.subjects.columns)
+                    .data(DataFactory.TwoD.subjects.data)
                 ;
             }
         },
@@ -55,8 +55,8 @@
         pie: {
             simple: function () {
                 return new Pie()
-                    .columns(DataFactory.ND.subjects.columns)
-                    .data(DataFactory.ND.subjects.data)
+                    .columns(DataFactory.TwoD.subjects.columns)
+                    .data(DataFactory.TwoD.subjects.data)
                 ;
             }
         },

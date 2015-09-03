@@ -181,7 +181,7 @@
                 ]
             },{
                 id: "polar",
-                label: "polar",
+                label: "Polar",
                 samples: [
                     { id: "simple", label: "Default" }
                 ]

@@ -1,11 +1,11 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["./DataFactory", "src/common/FAChar", "src/common/Icon", "src/common/Menu", "src/common/List", "src/common/Shape", "src/common/Surface", "src/common/Text", "src/common/TextBox", "src/common/ResizeSurface"], factory);
+        define(["./DataFactory", "src/common/FAChar", "src/common/Icon", "src/common/Menu", "src/common/List", "src/common/Shape", "src/common/Surface", "src/common/Text", "src/common/TextBox", "src/common/ResizeSurface", "src/chart/Column"], factory);
     } else {
-        root.test_ChartFactory = factory(root.test_DataFactory, root.common_FAChar, root.common_Icon, root.common_Menu, root.common_List, root.common_Shape, root.common_Surface, root.common_Text, root.common_TextBox, root.common_ResizeSurface);
+        root.test_ChartFactory = factory(root.test_DataFactory, root.common_FAChar, root.common_Icon, root.common_Menu, root.common_List, root.common_Shape, root.common_Surface, root.common_Text, root.common_TextBox, root.common_ResizeSurface, root.chart_Column);
     }
-}(this, function (DataFactory, FAChar, Icon, Menu, List, Shape, Surface, Text, TextBox, ResizeSurface) {
+}(this, function (DataFactory, FAChar, Icon, Menu, List, Shape, Surface, Text, TextBox, ResizeSurface, Column) {
     return {
         fachar: {
             simple: function () {
@@ -46,6 +46,10 @@
                     .title(DataFactory.Surface.simple.title)
                     .menu(DataFactory.Surface.simple.menu)
                     .buttonAnnotations(DataFactory.Surface.simple.buttonAnnotations)
+                    .content(new Column()
+                        .columns(DataFactory.ND.subjects.columns)
+                        .data(DataFactory.ND.subjects.data)
+                    )
                 ;
             }
         },
@@ -55,6 +59,10 @@
                     .title(DataFactory.Surface.simple.title)
                     .menu(DataFactory.Surface.simple.menu)
                     .buttonAnnotations(DataFactory.Surface.simple.buttonAnnotations)
+                    .content(new Column()
+                        .columns(DataFactory.ND.subjects.columns)
+                        .data(DataFactory.ND.subjects.data)
+                    )
                 ;
             }
         },

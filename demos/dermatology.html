@@ -13,6 +13,55 @@
             font-weight: 300;
             overflow:hidden;
         }
+        #widgetSelect, .widgetMenu, .sampleMenu {
+            position: absolute;
+            border: 1px solid #A5A5A5;
+            box-shadow: 2px 3px 10px 0px rgba(0,0,0,.5);
+        }
+        #widgetSelect.hide {
+            display: none;
+        }
+        #widgetSelect{
+            top:32px;
+            margin-left: 20px;
+        }
+        .widgetMenu, .sampleMenu {
+            left:100%;
+            margin-top: -25px;
+            white-space: nowrap;
+            display: none;
+        }
+        #widgetSelect li {
+            float: none;
+            background: snow;
+            color: #000;
+            text-shadow: none;
+            padding: 0 10px;
+            line-height: 25px;
+        }
+        #widgetSelect li:hover {
+            cursor: pointer;
+            background-color: #E5E5E5;
+        }
+        #widgetSelect li:hover > ul {
+            display:  block;
+        }
+        #selectButton {
+            display: inline-block;
+            padding: 0 10px;
+            margin: 0 20px;
+            border: 1px solid #fff;
+            border-radius: 3px;
+            background-color: snow;
+            color:#111;
+            line-height: 25px;
+            height: 25px;
+            text-shadow: none;
+            cursor: pointer;
+        }
+        #selectButton i {
+            padding-left: 5px
+        }
     </style>
     <script src="http://rawgit.com/jrburke/requirejs/2.1.17/require.js"></script>
     <script src="../src/config.js"></script>
@@ -52,9 +101,10 @@
             <nav>
                 <ul>
                     <li>
-                        <prompt>Widget:</prompt>
-                        <select id="widgetSelect" onchange="testWidget(this.value);">
-                        </select>
+                        <div id="selectButton" onclick="toggleMenu()">
+                            Select A Widget <i class="fa fa-caret-down"></i>
+                        </div>
+                        <ul id="widgetSelect" class="hide"></ul>
                     </li>
                     <li>
                         <label for="showProperties">&nbsp;&nbsp;Properties:</label>
@@ -73,7 +123,6 @@
                         <input id="showThemeText" type="checkbox" onchange="showThemeText(this.checked);" />
                     </li>
                     <li>
-                        <prompt style="margin-left:8px;">Theme:</prompt>
                         <select id="themeSelect" onchange="testTheme(this.value);">
                             <option value="Default">Default</option>
                             <option value="LN Red/Grey">LN Red/Grey</option>
@@ -112,8 +161,8 @@
             'LN Red/Grey':{"common_Widget":{"surfaceTitleFontSize":16,"surfaceTitleFontColor":"#FAFAFA","surfaceTitleFontFamily":"PT Sans","surfaceTitleFontBold":false,"surfaceTitleBackgroundColor":"#ED1C24","surfacePadding":"null","surfaceBackgroundColor":"#FAFAFA","surfaceBorderWidth":1,"surfaceBorderColor":"#6D6E71","surfaceBorderRadius":4,"surfaceTitleAlignment":"center","paletteID":"Set1"}},
             'Blue-Bordered':{"common_Widget":{"surfaceTitlePadding":0,"surfaceTitleFontSize":16,"surfaceTitleFontColor":"#5a6b92","surfaceTitleFontFamily":"'Courier New'","surfaceTitleFontBold":false,"surfaceTitleBackgroundColor":"transparent","surfacePadding":"null","surfaceBackgroundColor":"transparent","surfaceBorderWidth":2,"surfaceBorderColor":"#5a6b92","surfaceBorderRadius":0,"surfaceTitleAlignment":"left","paletteID":"Dark2","axisFontSize":14,"axisFontFamily":"Tahoma","xAxisTitleFontFamily":"'Courier New'","yAxisTitleFontFamily":"'Courier New'","legendFontSize":14,"legendFontFamily":"Tahoma"}},
             'Red-Bordered':{"common_Widget":{"surfaceTitleFontSize":19,"surfaceTitleFontColor":"rgb(237, 28, 36)","surfaceTitleFontFamily":"'Arial Black'","surfaceTitleBackgroundColor":"rgb(250, 250, 250)","surfacePadding":"null","surfaceBackgroundColor":"rgb(250, 250, 250)","surfaceBorderColor":"rgb(237, 28, 36)","paletteID":"BrBG","axisFontFamily":"'Arial Black'","xAxisTitleFontFamily":"'Arial Black'","xAxisTitleFontSize":19,"yAxisTitleFontFamily":"'Arial Black'","yAxisTitleFontSize":19,"legendFontFamily":"'Arial Black'"}},
-            'Green/Light-Grey':{"common_Widget":{"surfaceTitlePadding":0,"surfaceTitleFontSize":16,"surfaceTitleFontColor":"#4e4e4e","surfaceTitleFontFamily":"Tahoma","surfaceTitleFontBold":false,"surfaceTitleBackgroundColor":"#dbb593","surfacePadding":"null","surfaceBackgroundColor":"#e2e2dc","surfaceBorderWidth":0,"surfaceBorderColor":"#ffffff","surfaceBorderRadius":0,"surfaceTitleAlignment":"left","paletteID":"category10","axisFontSize":14,"axisFontFamily":"Tahoma","xAxisTitleFontFamily":"Tahoma","yAxisTitleFontFamily":"Tahoma","legendFontSize":14,"legendFontFamily":"Tahoma"}},
-        }
+            'Green/Light-Grey':{"common_Widget":{"surfaceTitlePadding":0,"surfaceTitleFontSize":16,"surfaceTitleFontColor":"#4e4e4e","surfaceTitleFontFamily":"Tahoma","surfaceTitleFontBold":false,"surfaceTitleBackgroundColor":"#dbb593","surfacePadding":"null","surfaceBackgroundColor":"#e2e2dc","surfaceBorderWidth":0,"surfaceBorderColor":"#ffffff","surfaceBorderRadius":0,"surfaceTitleAlignment":"left","paletteID":"category10","axisFontSize":14,"axisFontFamily":"Tahoma","xAxisTitleFontFamily":"Tahoma","yAxisTitleFontFamily":"Tahoma","legendFontSize":14,"legendFontFamily":"Tahoma"}}
+        };
         window.__hpcc_theme = themeSelectObj['Default'];
 
         var body = document.getElementById("body");
@@ -135,17 +184,54 @@
                             category: category,
                             widget: widget,
                             sample: sample
-                        })
+                        });
                     });
                 });
             });
             var sampleSelect = d3.select("#widgetSelect");
-            var sampleOptions = sampleSelect.selectAll("option").data(samples);
-            sampleOptions.enter()
-                .append("option")
+            var categoryOptions = sampleSelect.selectAll("li").data(testFactory.categories);
+            categoryOptions.enter()
+                .append("li")
+                .attr("class", function (d) { return d.factory; })
                 .attr("value", function (d, idx) { return idx; })
-                .text(function (d) { return "[" + d.category.label + "] " + d.widget.label + " - " + d.sample.label; })
+                .text(function (d) { return d.label;  })
+                .append("ul")
             ;
+            var thisFactory = "",
+                thisWidget = "";
+                
+            categoryOptions.each(function(d,idx){
+                thisFactory = d.factory;
+                var categorySelect = d3.select(this).select("ul").classed("widgetMenu", true);
+                var widgetOptions = categorySelect.selectAll("li").data(testFactory.categories[idx]["widgets"]);
+                widgetOptions.enter()
+                    .append("li")
+                    .attr("class", function (d) { return d.id; })
+                    .attr("value", function (d, idx) { return idx; })
+                    .text(function (d) { return d.label;  })
+                    .append("ul")
+                ;
+                
+                widgetOptions.each(function(d, idy) {
+                    thisWidget = d.id;
+                    var widgetSelect = d3.select(this).select("ul").classed("sampleMenu", true);
+                    
+                    var sampleOptions = widgetSelect.selectAll("li").data(testFactory.categories[idx]["widgets"][idy]["samples"]);
+                    sampleOptions.enter()
+                        .append("li")
+                        .attr("data-sample", function (d) { return d.id; })
+                        .attr("data-factory", thisFactory)
+                        .attr("data-widget", thisWidget)
+                        .text(function (d) { return d.label;  })
+                        .on("click", function (d) {
+                            testWidget(d3.select(this).attr("data-factory"), d3.select(this).attr("data-widget"), d3.select(this).attr("data-sample"));
+                        
+                            d3.select("#widgetSelect").classed("hide", true);
+                        })
+                    ;
+                });
+            });
+            
             var propEditor = new PropertyEditor().showColumns(false).showData(false);
             propEditor.onChange =  Surface.prototype.debounce(function (widget, propID) {
                 if (propID === "columns") {
@@ -220,10 +306,9 @@
                 }
             }
 
-            testWidget = function (idx, params) {
-                testFactory.create(samples[idx].category.factory, samples[idx].widget.id, samples[idx].sample.id, function(widget) {
+            testWidget = function (factory, widget, sample, params) {
+                testFactory.create(factory, widget, sample, function(widget) {
                     currWidget = widget;
-//                    console.log(widget);
                     if (params) {
                         for (var key in params) {
                             currWidget[key](params[key]);
@@ -253,8 +338,8 @@
                         displaySerializationText(currWidget);
                         displayThemeText(currWidget);
                     });
-                })
-            }
+                });
+            };
             showProperties = function (show) {
                 main
                     .setContent(0, 2, show ? propEditor : null, "", 2, 1)
@@ -264,7 +349,7 @@
                         }
                     })
                 ;
-            }
+            };
             showSerialization = function (show) {
                 main
                     .setContent(2, 0, show ? serializationSurface : null, "", 1, 3)
@@ -274,7 +359,7 @@
                         }
                     })
                 ;
-            }
+            };
             showSerializationText = function (show) {
                 main
                     .setContent(0, 3, show ? serializationTextSurface : null, "", 2, 1)
@@ -284,7 +369,7 @@
                         }
                     })
                 ;
-            }
+            };
             showThemeText = function (show) {
                 main
                     .setContent(2, 3, show ? themeTextSurface : null, "", 1, 1)
@@ -304,16 +389,25 @@
                     .render()
                 ;
                 if (first) {
-                    first = false;
-                    testWidget(document.getElementById("widgetSelect").value, params);
+                    first = false;               
+                    var factory = testFactory.categories[0].factory;
+                    var widget = testFactory.categories[0].widgets[0].id;
+                    var sample = testFactory.categories[0].widgets[0].samples[0].id;
+
+                    console.log(widget, sample);
+                    testWidget(factory, widget, sample, params);
                 }
-            }, 250)
+            }, 250);
             frame.doResize();
         });
         function doResize() {
             if (frame) {
                 frame.doResize();
             }
+        }
+        function toggleMenu() {
+            var menu = d3.select("#widgetSelect");
+            menu.classed("hide", !menu.classed("hide"));
         }
     </script>
 </body>
