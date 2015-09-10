@@ -30,6 +30,7 @@
         this._pos = { x: 0, y: 0 };
         this._size = { width: 0, height: 0 };
         this._scale = 1;
+        this._visible = true;
 
         for (var key in this) {
             if (key.indexOf("__meta_") === 0) {
@@ -688,6 +689,10 @@
     //  Render  ---
     Widget.prototype.render = function (callback) {
         callback = callback || function () { };
+        if (!this.visible()) {
+            callback(this);
+            return this;
+        }
         if (this._parentElement) {
             if (!this._tag)
                 throw "No DOM tag specified";
