@@ -16,3 +16,10 @@
     background-color: white;
     z-index:999;
 }
+.layout_Tabbed .tab-content {
+    position:absolute;
+    opacity:0;
+}
+.layout_Tabbed .tab-content.active {
+    opacity:1;
+}

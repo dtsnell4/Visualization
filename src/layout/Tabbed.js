@@ -76,14 +76,23 @@
 
         element.style("padding", this.padding() + "px");
 
+        var content = this._contentContainer.selectAll(".tab-content.id" + this.id()).data(this.widgets(), function (d) { return d.id(); });
         var tabs = this._tabContainer.selectAll(".tab-button.id" + this.id()).data(this.showTabs() ? this.labels() : [], function (d) { return d; });
         tabs.enter().append("span")
             .attr("class", "tab-button id" + this.id())
             .style("cursor", "pointer")
             .on("click", function (d, idx) {
+                tabs
+                    .classed("active", false)
+                ;
+                d3.select(this).
+                    classed("active", "true")
+                ;
                 context
                     .activeTabIdx(idx)
-                    .render()
+                ;
+                content
+                    .classed("active", function (d, idx) { return context.activeTabIdx() === idx; })
                 ;
             })
         ;
@@ -93,7 +102,6 @@
         ;
         tabs.exit().remove();
 
-        var content = this._contentContainer.selectAll(".tab-content.id" + this.id()).data(this.widgets(), function (d) { return d.id(); });
         content.enter().append("div")
             .attr("class", "tab-content id" + this.id())
             .each(function (widget, idx) {
@@ -102,7 +110,6 @@
         ;
         content
             .classed("active", function (d, idx) { return context.activeTabIdx() === idx; })
-            .style("display", function (d, idx) { return context.activeTabIdx() === idx ? "block" : "none"; })
             .each(function (surface, idx) {
                 var wSize = context.widgetSize(d3.select(this));
                 surface
