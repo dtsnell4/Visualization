@@ -1,7 +1,7 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "../common/HTMLWidget", "../layout/Surface", "../common/TextBox", "../common/Text", "css!./Tabbed"], factory);
+        define(["d3", "../common/HTMLWidget", "../layout/Surface", "../graph/Graph", "../common/Text", "css!./Tabbed"], factory);
     } else {
         root.layout_Tabbed = factory(root.d3, root.common_HTMLWidget, root.layout_Surface, root.common_TextBox, root.common_Text);
     }
