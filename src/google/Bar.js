@@ -206,19 +206,19 @@
         return retVal;
     };
     
-//    Bar.prototype.testData = function() {
-//        this.columns(["Subject", "Year 1", "Year 2"]);
-//        this.data([
-//            ["Geography", 75, 68],
-//            ["English", 45, 55],
-//            ["Math", 98, 92],
-//            ["Science", 66, 60]
-//        ]);
-//        this.orientation("vertical");
-//        this.yAxisPrimaryLabel("Year 1 grade");
-//        this.yAxisSecondaryLabel("Year 2 grade");
-//        return this;
-//    };
+    Bar.prototype.testData = function() {
+        this.columns(["Subject", "Year 1", "Year 2"]);
+        this.data([
+            ["Geography", 75, 68],
+            ["English", 45, 55],
+            ["Math", 98, 92],
+            ["Science", 66, 60]
+        ]);
+        this.orientation("vertical");
+        this.yAxisPrimaryLabel("Year 1 grade");
+        this.yAxisSecondaryLabel("Year 2 grade");
+        return this;
+    };
 
     Bar.prototype.enter = function (domNode, element) {
         this._chart = new google.charts.Bar(domNode);
