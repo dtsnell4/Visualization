@@ -16,39 +16,31 @@
     Tabbed.prototype._class += " layout_Tabbed";
 
     Tabbed.prototype.publish("showTabs", true, "boolean", "Show Tabs", null, {});
-    Tabbed.prototype.publish("padding", 4, "number", "Padding");
+    Tabbed.prototype.publish("padding", 0, "number", "Padding");
     Tabbed.prototype.publish("activeTabIdx", 0, "number", "Index of active tab", null, {});
 
     Tabbed.prototype.publish("labels", [], "array", "Array of tab labels sharing an index with ", null, { tags: ["Private"] });
     Tabbed.prototype.publish("widgets", [], "widgetArray", "widgets", null, { tags: ["Private"] });
-
-    // Tabbed.prototype.testData = function () {
-    //     this
-    //         .addTab(new TextBox().testData(), "MultiChart", true)
-    //         .addTab(new TextBox().testData(), "Pie Chart")
-    //         .addTab(new TextBox().testData(), "Line Chart")
-    //         .addTab(new Tabbed()
-    //             .addTab(new TextBox().testData(), "Another Pie Chart")
-    //             .addTab(new TextBox().testData(), "Another Line Chart", true), "Nested Example")
-    //     ;
-    //     return this;
-    // };
 
     Tabbed.prototype.clearTabs = function () {
         this.widgets([]);
         return this;
     };
 
-    Tabbed.prototype.addTab = function (widget, label, isActive) {
+    Tabbed.prototype.addTab = function (widget, label, isActive, callback) {
         var labels = this.labels();
         var widgets = this.widgets();
         if (isActive) {
             this.activeTabIdx(this.widgets().length);
         }
         labels.push(label);
-        widgets.push(new Surface().widget(widget ? widget : new Text().text("No widget defined for tab")));
+        var surface = new Surface().widget(widget ? widget : new Text().text("No widget defined for tab"));
+        widgets.push(surface);
         this.labels(labels);
         this.widgets(widgets);
+        if (callback) {
+            callback(surface)
+        }
         return this;
     };
 
@@ -80,18 +72,11 @@
             .attr("class", "tab-button id" + this.id())
             .style("cursor", "pointer")
             .on("click", function (d, idx) {
-                tabs
-                    .classed("active", false)
-                ;
-                d3.select(this).
-                    classed("active", "true")
-                ;
+                context.click(context.widgets()[idx].widget(), d, idx);
                 context
                     .activeTabIdx(idx)
+                    .render()
                 ;
-                context.widgets().forEach(function(d,i) {
-                    d.visible(i === idx);
-                });
             })
         ;
         tabs
@@ -99,23 +84,40 @@
             .text(function (d) { return d; })
         ;
         tabs.exit().remove();
-        
-        this.widgets().forEach(function(surface, idx) {
-            var wSize = context.widgetSize(d3.select(this));
-            surface
-                .target(context._contentContainer.node())
-                .resize(wSize)
-                .surfaceBorderWidth(context.showTabs() ? null : 0)
-                .surfacePadding(context.showTabs() ? null : 0)
-                .visible(context.activeTabIdx() === idx)
-           ;
-            surface._parentElement
-                .attr("class", "tab-content id" + context.id())
-                .style("position", "absolute")
-                .classed("active", function (d, i) { return context.activeTabIdx() === i; })
-            ;
-        });
+
+        var content = this._contentContainer.selectAll(".tab-content.id" + this.id()).data(this.widgets(), function (d) { return d.id(); });
+        content.enter().append("div")
+            .attr("class", "tab-content id" + this.id())
+            .each(function (widget, idx) {
+                widget.target(this);
+            })
+        ;
+        content
+            .classed("active", function (d, idx) { return context.activeTabIdx() === idx; })
+            .style("display", function (d, idx) { return context.activeTabIdx() === idx ? "block" : "none"; })
+            .each(function (surface, idx) {
+                surface.visible(context.activeTabIdx() === idx);
+                if (context.activeTabIdx() === idx) {
+                    var wSize = context.widgetSize(d3.select(this));
+                    surface
+                        .surfaceBorderWidth(context.showTabs() ? null : 0)
+                        .surfacePadding(context.showTabs() ? null : 0)
+                        .resize(wSize)
+                    ;
+                }
+            })
+        ;
+        content.exit()
+            .each(function (widget, idx) {
+                widget
+                    .target(null)
+                ;
+            })
+            .remove();
     };
+
+    Tabbed.prototype.click = function (widget, column, idx) {
+    }
 
     return Tabbed;
 }));
