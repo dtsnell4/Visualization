@@ -170,35 +170,35 @@
         },
         Tabbed: {
             simple: function (callback) {
-                require(["test/DataFactory", "src/layout/Tabbed", "src/chart/Pie", "src/chart/MultiChartSurface", "src/chart/Line", "src/chart/Column", "src/chart/Step"], function (DataFactory, Tabbed, Pie, MultiChartSurface, Line, Column, Step) {
+                require(["test/DataFactory", "src/layout/Tabbed", "src/chart/Pie", "src/map/ChoroplethCounties", "src/chart/Line", "src/chart/Column", "src/chart/Step"], function (DataFactory, Tabbed, Pie, ChoroplethCounties, Line, Column, Step) {
                     callback(new Tabbed()
                         .addTab(
-                            new Pie()
-                                .columns(DataFactory.TwoD.subjects.columns)
-                                .data(DataFactory.TwoD.subjects.data)
+                            new ChoroplethCounties()
+                                .columns(DataFactory.Counties.simple.columns)
+                                .data(DataFactory.Counties.simple.rawData)
                             , "Pie Chart", true)
                         .addTab(
-                            new Line()
-                                .columns(DataFactory.ND.subjects.columns)
-                                .data(DataFactory.TwoD.subjects.data)
+                            new ChoroplethCounties()
+                                .columns(DataFactory.Counties.simple.columns)
+                                .data(DataFactory.Counties.simple.rawData)
                             , "Line CHart")
                         .addTab(
-                            new Column()
-                                .columns(DataFactory.ND.subjects.columns)
-                                .data(DataFactory.ND.subjects.data)
+                            new ChoroplethCounties()
+                                .columns(DataFactory.Counties.simple.columns)
+                                .data(DataFactory.Counties.simple.rawData)
                             , "Column Chart"
                         )
                         .addTab(new Tabbed()
                             .addTab(
-                                new Step()
-                                    .columns(DataFactory.ND.subjects.columns)
-                                    .data(DataFactory.ND.subjects.data)
+                                new ChoroplethCounties()
+                                .columns(DataFactory.Counties.simple.columns)
+                                .data(DataFactory.Counties.simple.rawData)
                                 , "Step Chart"
                             )
                             .addTab(
-                                new Pie()
-                                    .columns(DataFactory.TwoD.subjects.columns)
-                                    .data(DataFactory.TwoD.subjects.data)
+                                new ChoroplethCounties()
+                                .columns(DataFactory.Counties.simple.columns)
+                                .data(DataFactory.Counties.simple.rawData)
                                 , "Pie Chart", true), "Nested Example"
                             )
                     );
