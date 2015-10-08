@@ -1,14 +1,15 @@
 ﻿"use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "../common/SVGWidget", "../common/Palette", "../api/IGraph", "./Vertex", "./Edge", "./GraphData", "./GraphLayouts", "../common/Utility", "css!./Graph"], factory);
+        define(["d3", "../common/SVGWidget", "../common/Palette", "../api/IGraph", "./Vertex", "./Edge", "./GraphData", "./GraphLayouts", "../common/Utility", "../api/ILoader", "css!./Graph"], factory);
     } else {
         root.graph_Graph = factory(root.d3, root.common_SVGWidget, root.common_Palette, root.api_IGraph, root.graph_Vertex, root.graph_Edge, root.graph_GraphData, root.graph_GraphLayouts, root.common_Utility);
     }
-}(this, function (d3, SVGWidget, Palette, IGraph, Vertex, Edge, GraphData, GraphLayouts, Utility) {
+}(this, function (d3, SVGWidget, Palette, IGraph, Vertex, Edge, GraphData, GraphLayouts, Utility, ILoader) {
     function Graph() {
         SVGWidget.call(this);
         IGraph.call(this);
+        ILoader.call(this);
 
         this.graphData = new GraphData();
         this.highlight = {
@@ -22,6 +23,7 @@
     Graph.prototype.constructor = Graph;
     Graph.prototype._class += " graph_Graph";
     Graph.prototype.implements(IGraph.prototype);
+    Graph.prototype.implements(ILoader.prototype);
 
     Graph.prototype.publish("allowDragging", true, "boolean", "Allow Dragging of Vertices", null, { tags: ["Advanced"] });
     Graph.prototype.publish("layout", "Circle", "set", "Default Layout", ["Circle", "ForceDirected", "ForceDirected2", "Hierarchy", "None"], { tags: ["Basic"] });
@@ -134,6 +136,9 @@
 
     Graph.prototype.enter = function (domNode, element) {
         SVGWidget.prototype.enter.apply(this, arguments);
+console.log(String(this.target()));
+        this.showLoader(true);
+
         var context = this;
 
         //  Zoom  ---
@@ -815,6 +820,18 @@
                 .attr("r", 4)
         ;
     };
+
+    // Graph.prototype.preUpdate = function (element, domNode) {
+    //     SVGWidget.prototype.preUpdate.apply(this, arguments);
+    //     this.showLoader(true);
+    //     // ILoader.prototype.preUpdate.apply(this, arguments);
+    // };
+
+    // Graph.prototype.postUpdate = function (element, domNode) {
+    //     SVGWidget.prototype.postUpdate.apply(this, arguments);
+    //     this.showLoader(false);
+    //     // ILoader.prototype.preUpdate.apply(this, arguments);
+    // };
 
     return Graph;
 }));
