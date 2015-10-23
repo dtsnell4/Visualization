@@ -53,7 +53,10 @@
     Table.prototype.publish("tbodySelectedRowBackgroundColor", null, "html-color", "Table body selected row color", null, { tags: ["Basic"], optional: true });
     Table.prototype.publish("tableZebraColor", null, "html-color", "Table zebra row color", null, { tags: ["Basic"], optional: true });
     
-    Table.prototype.publish("columnFormatting", ["number","number","string"], "array", "Array of formatting rules for each column", null, { tags: ["Basic"], optional: true });
+    Table.prototype.publish("columnPatterns", [], "array", "Array of formatting rules for each column", null, { tags: ["Basic"], optional: true });
+    Table.prototype.publish("dateAlign", "right", "set", "Array of alignment positions for table data", ["left","right","center"], { tags: ["Basic"], optional: true });
+    Table.prototype.publish("stringAlign", "left", "set", "Array of alignment positions for table data", ["left","right","center"], { tags: ["Basic"], optional: true });
+    Table.prototype.publish("numberAlign", "right", "set", "Array of alignment positions for table data", ["left","right","center"], { tags: ["Basic"], optional: true });
 
     Table.prototype.data = function (_) {
         var retVal = HTMLWidget.prototype.data.apply(this, arguments);
@@ -243,25 +246,20 @@
         cells.enter()
             .append("td")
         ;
-        cells[this.renderHtmlDataCells() ? "html" : "text"](function (d) { 
-            if(typeof(d) === "string"){
-                return d.trim();
-            } else if (typeof(d) === "number") {
-                return d;
-            }
-            return ""; 
+        cells[this.renderHtmlDataCells() ? "html" : "text"](function (d, idx) { 
+            var retVal = context.getColumnFormatting(d, idx);
+            return retVal; 
         });
         cells.exit()
             .remove()
         ;
         rows.each(function(tr,trIdx){
             d3.select(this).selectAll("td").each(function(tdContents,tdIdx){
-                var format = context.getColumnFormatting(tdIdx);
+                var alignment = context.getColumnAlignment(tdContents);
                 d3.select(this)
                     .classed("tr-"+trIdx+"-td-"+tdIdx,true)
-                    .text(format(tdContents))
+                    .style("text-align", alignment)
                 ;
-                
             });
         });
         this._paginator.render();
@@ -415,14 +413,8 @@
                 tds
                     .enter() 
                     .append("tr")
-                    .each(function() {
-                        var element = d3.select(this);
-                        element
-                            .append("td")
-                            .html(function(d) {
-                                return d.innerHTML || "&nbsp;";
-                            })
-                        ;
+                    .html(function(d) {
+                        return d.outerHTML || "<td>&nbsp;</td>";  
                     })
                 ;  
                 tds
@@ -695,22 +687,40 @@
         }
     };
 
-    Table.prototype.getColumnFormatting = function(rowIdx,colIdx){
-        switch(this.columnFormatting()[rowIdx]){
+    Table.prototype.getColumnFormatting = function(cellData,colIdx){
+        var context = this;
+        if(typeof(cellData) === "string"){
+            var isDate = Date.parse(cellData);
+            if (isNaN(isDate)) {
+                return cellData.trim();
+            } else {
+                var timeFormat = d3.time.format(context.columnPatterns()[colIdx]);
+                return timeFormat(new Date(cellData)) || cellData;
+            }
+        } else if (typeof(cellData) === "number") {
+            var format = d3.format(context.columnPatterns()[colIdx]);
+            return format(cellData);
+        }
+        return cellData;
+    };
+    Table.prototype.getColumnAlignment = function(cellData){
+        var context = this;
+        switch(typeof(cellData)){
             case 'number':
-                return function(val){
-                    //do number formatting logic here
-                    return val;
+                return function(){
+                    return context.numberAlign();
                 };
             case 'string':
-                return function(val){
-                    //do string formatting logic here
-                    return val;
+                return function(){
+                    var isDate = Date.parse(cellData);
+                    if (!isNaN(isDate)) {
+                       return context.dateAlign();
+                    } else {
+                        return context.stringAlign();
+                    }
                 };
             default:
-                return function(val){
-                    return val;
-                };
+                return "";
         }
     };
 
