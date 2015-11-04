@@ -1,18 +1,19 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "./CommonND", "goog!visualization,1.1,packages:[bar]"], factory);
+        define(["d3", "../common/HTMLWidget", "http://www.gstatic.com/charts/loader.js"], factory);
     } else {
-        root.google_Bar = factory(root.d3, root.google_CommonND);
+        root.google_Bar = factory(root.d3, root.google_HTMLWidget);
     }
-}(this, function (d3, CommonND) {
+}(this, function (d3, HTMLWidget) {
 
     function Bar() {
-        CommonND.call(this);
+        HTMLWidget.call(this);
+        this._tag = "div";
 
         this._chartType = "BarChart";
     }
-    Bar.prototype = Object.create(CommonND.prototype);
+    Bar.prototype = Object.create(HTMLWidget.prototype);
     Bar.prototype.constructor = Bar;
     Bar.prototype._class += " google_Bar";
 
@@ -93,7 +94,7 @@
     Bar.prototype.publish("yAxisViewWindowMin", null, "number", "The Minimum Vertical Data Value To Render",null,{tags:["Advanced"]});
 
     Bar.prototype.getChartOptions = function () {
-        var retVal = CommonND.prototype.getChartOptions.apply(this, arguments);
+        var retVal = HTMLWidget.prototype.getChartOptions.apply(this, arguments);
 
         retVal.dataOpacity = this.dataOpacity();
         retVal.isStacked = this.isStacked();
@@ -207,12 +208,33 @@
     };
 
     Bar.prototype.enter = function (domNode, element) {
-        this._chart = new google.charts.Bar(domNode);
-        CommonND.prototype.enter.apply(this, arguments);
+        google.charts.load("43", {packages:["bar"]});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Year', 'Sales', 'Expenses'],
+          ['2013',  1000,      400],
+          ['2014',  1170,      460],
+          ['2015',  660,       1120],
+          ['2016',  1030,      540]
+        ]);
+
+        var options = {
+          title: 'Company Performance',
+          hAxis: {title: 'Year',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.charts.Bar(domNode);
+        chart.draw(data, options);
+      }
+        // this._chart = new google.charts.Bar(domNode);
+        HTMLWidget.prototype.enter.apply(this, arguments);
     };
 
     Bar.prototype.update = function (domNode, element) {
-        CommonND.prototype.update.apply(this, arguments);
+        HTMLWidget.prototype.update.apply(this, arguments);
     };
 
     return Bar;
