@@ -40,7 +40,6 @@
         Surface.prototype.update.apply(this, arguments);
         var context = this;
         var offsetMultiple;
-
         var dragHandles = element.selectAll(".dragHandle").data(this._dragHandles, function (d) { return d; });
         dragHandles.enter().append("div")
             .attr("class", function (d) { return "dragHandle dragHandle_" + d; })
