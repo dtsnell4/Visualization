@@ -1,12 +1,13 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["d3", "../common/HTMLWidget", "./Paginator", "../common/Utility", "css!./Table"], factory);
+        define(["d3", "../common/HTMLWidget", "./Paginator", "../common/Utility", "../common/Widget", "css!./Table"], factory);
     } else {
         root.other_Table = factory(root.d3, root.common_HTMLWidget, root.other_Paginator, root.common_Utility);
     }
-}(this, function (d3, HTMLWidget, Paginator, Utility) {
+}(this, function (d3, HTMLWidget, Paginator, Utility, Widget) {
     function Table() {
+        Widget.call(this);
         HTMLWidget.call(this);
         this._tag = "div";
         this._currentSort = "";
@@ -17,6 +18,7 @@
         this._selectionPrevClick = null;
         this._paginatorTableSpacing = 4;
     }
+    Table.prototype = Object.create(Widget.prototype);
     Table.prototype = Object.create(HTMLWidget.prototype);
     Table.prototype.constructor = Table;
     Table.prototype._class += " other_Table";
@@ -66,6 +68,7 @@
     Table.prototype.publish("columnPatterns", [], "array", "Array of formatting rules for each column", null, { tags: ["Basic"], optional: true });
     Table.prototype.publish("stringAlign", "left", "set", "Array of alignment positions for strings", ["left","right","center"], { tags: ["Basic"], optional: true });
     Table.prototype.publish("numberAlign", "right", "set", "Array of alignment positions for numbers", ["left","right","center"], { tags: ["Basic"], optional: true });
+    Table.prototype.publish("childWidgets", [], "widgetArray", "widgets", null, { tags: ["Private"] });
 
     Table.prototype.data = function (_) {
         var retVal = HTMLWidget.prototype.data.apply(this, arguments);
@@ -215,7 +218,6 @@
         var totalRow = [this.totalledLabel() ? this.totalledLabel() : null];
         if (context.totalledColumns().length !== 0) {
             var totArr = context.totalledColumns();
-            console.log(totArr);
             for (var i = 1; i < context.columns().length; i++) {
                 var sum = 0;
                 if (totArr.indexOf(i) !== -1) {                  
@@ -300,12 +302,21 @@
             .append("td")
         ;
         cells[this.renderHtmlDataCells() ? "html" : "text"](function (d, idx) { 
-            var retVal = context.columnPatterns()[idx] ? context.getColumnFormatting(d, idx) : d;
+            var retVal;
+            if (d instanceof Widget) {
+                d.target(this);
+                context.childWidgets().push(d);
+                console.log(this, d);
+                // return " ";
+            } else {
+                retVal = context.columnPatterns()[idx] ? context.getColumnFormatting(d, idx) : d;
+            }
             return retVal; 
         });
         cells.exit()
             .remove()
         ;      
+
         rows.each(function(tr,trIdx){
             d3.select(this).selectAll("td").each(function(tdContents,tdIdx){
                 var alignment = context.getColumnAlignment(tdContents);
@@ -318,7 +329,7 @@
             context.applyStyleToRows(dis);
         });  
 
-        var tableMarginHeight = this.thead.node().offsetHeight;
+        var tableMarginHeight = this.thead.style("height");
 
         var tbodyRows = context.table.select("tbody tr");
         var tds = tbodyRows.selectAll("td");
@@ -336,11 +347,11 @@
         this.thead
             .style("position", "absolute")
             .style("width", totalWidth + "px")
-            .style("margin-top", ((this.fixedHeader() ? this.tableDiv.node().scrollTop: 0) -tableMarginHeight) + "px")
+            .style("margin-top", ((this.fixedHeader() ? this.tableDiv.node().scrollTop: 0) - parseInt(tableMarginHeight)) + "px")
         ;
         this.table
             .style("width", totalWidth + "px" )
-            .style("margin-top", tableMarginHeight + "px")
+            .style("margin-top", tableMarginHeight)
         ;
         this.tbody
             .style("width", totalWidth + "px" )
@@ -459,14 +470,14 @@
             }
             this.fixedCol
                 .style("position", "absolute")
-                .style("margin-top", -this.tableDiv.node().scrollTop + tableMarginHeight + "px")
+                .style("margin-top", -this.tableDiv.node().scrollTop + parseInt(tableMarginHeight) + "px")
             ;
             fixedColTd
                 .style("width", fixedColWidth + "px")
             ;
             this.fixedColHead
                 .style("position", "absolute")
-                .style("margin-top", (this.fixedHeader() ? this.tableDiv.node().scrollTop: 0) - tableMarginHeight + "px")
+                .style("margin-top", (this.fixedHeader() ? this.tableDiv.node().scrollTop: 0) - parseInt(tableMarginHeight) + "px")
             ;
             fixedColTh
                 .style("width", fixedColWidth + "px")
@@ -481,6 +492,10 @@
             .style("width", this.width() - fixedColWidth + "px")
         ;
 
+        context.childWidgets().forEach(function(d) {
+            console.log(d);
+            d.render();
+        });
         this._paginator.render();
         
         context.applyStyleToRows(this.tbody.selectAll("tr"));
@@ -497,7 +512,7 @@
                 calcWidth();
                 calcHeight();
             } else {
-                if (box.height - tableMarginHeight <= context.tableDiv.node().offsetHeight ) {
+                if (box.height - parseInt(tableMarginHeight) <= context.tableDiv.node().offsetHeight ) {
                     calcHeight();
                 } else {
                     if (context.fixedHeader()) {
@@ -535,7 +550,7 @@
         }
 
         function calcHeight() {
-            newTableHeight = box.height - tableMarginHeight + context.getScrollbarWidth();
+            newTableHeight = box.height - parseInt(tableMarginHeight) + context.getScrollbarWidth();
             newTableHeight = newTableHeight + "px";
         }
 
@@ -565,6 +580,7 @@
     Table.prototype.setOnScrollEvents = function(scrollNode, margHeight) {
         var context = this;
         scrollNode.onscroll = function (e) {
+            // var leftDelta = e.target.scrollLeft;
             var topDelta = e.target.scrollTop;
             if (context.fixedHeader()) {
                 context.thead

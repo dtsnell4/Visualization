@@ -1,11 +1,11 @@
 "use strict";
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define(["src/form/Input", "src/common/WidgetArray", "src/chart/MultiChartSurface", "src/layout/Surface", "src/chart/Column"], factory);
+        define(["src/form/Input", "src/common/WidgetArray", "src/chart/MultiChartSurface", "src/layout/Surface", "src/chart/Column", "src/common/Text"], factory);
     } else {
-        root.test_DataFactory = factory(root.form_Input, root.common_WidgetArray, root.chart_MultiChartSurface, root.layout_Surface, root.chart_Column);
+        root.test_DataFactory = factory(root.form_Input, root.common_WidgetArray, root.chart_MultiChartSurface, root.layout_Surface, root.chart_Column, root.common_TextBox);
     }
-}(this, function (Input, WidgetArray, MultiChartSurface, Surface, Column) {
+}(this, function (Input, WidgetArray, MultiChartSurface, Surface, Column, Text) {
     var DataFactory = {
         OneD: {
             subjects: {
@@ -384,6 +384,10 @@
         Table: {
             simple: {
                 data: [[37.665074,-122.384375,"green-dot.png"],[32.69068,-117.17854],[39.709455,-104.969859],[41.244123,-95.96161],[32.68898,-117.19204],[45.78649,-108.5266],[45.79618,-108.535652],[45.77432,-108.49437],[45.777062,-108.549835,"red-dot.png"]],
+                columns: ["Lat","Long","Pin"]
+            },
+            widget: {
+                data: [[37.665074,-122.384375,"green-dot.png"],[32.69068,-117.17854, new Text().text("Hello World")],[39.709455,-104.969859],[41.244123,-95.96161],[32.68898,-117.19204],[45.78649,-108.5266],[45.79618,-108.535652],[45.77432,-108.49437],[45.777062,-108.549835,"red-dot.png"]],
                 columns: ["Lat","Long","Pin"]
             },
             formatted: {

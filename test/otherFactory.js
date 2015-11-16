@@ -116,6 +116,14 @@
                     );
                 });
             },
+            widget: function (callback) {
+                require(["test/DataFactory", "src/other/Table"], function (DataFactory, Table) {
+                    callback(new Table()
+                        .columns(DataFactory.Table.widget.columns)
+                        .data(DataFactory.Table.widget.data)
+                    );
+                });
+            },
             large: function (callback) {
                 require(["test/DataFactory", "src/other/Table"], function (DataFactory, Table) {
                     callback(new Table()
