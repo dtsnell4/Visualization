@@ -225,7 +225,7 @@ gulp.task("bump", [], function () {
 });
 
 const TAG_FILES = ["./package.json", "./bower.json", "./dist", "./dist-amd"];
-gulp.task("git-add-dist", ["build-all"], function (cb) {
+gulp.task("git-add-dist", /*["build-all"], */function (cb) {
     return gulp.src(TAG_FILES)
         .pipe(git.add({ args: "-f" }))
     ;
@@ -240,10 +240,14 @@ gulp.task("tag", ["git-add-dist"], function () {
     ;
 });
 
-gulp.task("tag-release", ["tag"], function (cb) {
+gulp.task("tag-release", ["tag"], */function (cb) {
     var version = require("./package.json").version;
     var target = argv.upstream ? "upstream" : "origin"
-    git.push(target, 'v' + version, cb);
+    git.push(target, 'v' + version, function() {
+		git.checkout('b' + version, {args:'-b'}, function() {
+			git.push(target, 'b' + version, cb);
+		});
+	});
 });
 
 gulp.task("copy-amchart-images", function() {
