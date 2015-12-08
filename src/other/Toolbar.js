@@ -42,10 +42,7 @@
             var box = this.getBoundingClientRect();
             var spanBox = span.node().getBoundingClientRect();
             var offset = (box.height/2) - (spanBox.height/2) - (spanBox.top - box.top);
-            span.style({
-                top:offset+"px",
-                left:offset+"px"
-            });
+            span.style("padding", offset+"px");
         });
         title.exit().remove();
         
